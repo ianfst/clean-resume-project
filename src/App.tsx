@@ -20,22 +20,13 @@ const UnifiedHomepage = lazy(() => import("./pages/UnifiedHomepage"));
 const ResumeUpload = lazy(() => import("./pages/ResumeUpload"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Auth = lazy(() => import("./pages/Auth"));
-const Coaching = lazy(() => import("./pages/Coaching"));
 const ResumeOptimizer = lazy(() => import("./pages/ResumeOptimizer"));
-const Agencies = lazy(() => import("./pages/Agencies"));
-const JobSearch = lazy(() => import("./pages/JobSearch"));
-const ApplicationQueue = lazy(() => import("./pages/ApplicationQueue"));
-const BooleanSearch = lazy(() => import("./pages/BooleanSearch"));
 const RateCalculator = lazy(() => import("./pages/RateCalculator"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Templates = lazy(() => import("./pages/Templates"));
 const APIKeys = lazy(() => import("./pages/APIKeys"));
 const AIAgents = lazy(() => import("./pages/AIAgents"));
 const MyResumes = lazy(() => import("./pages/MyResumes"));
-const LinkedInBloggingAgent = lazy(() => import("./pages/agents/LinkedInBloggingAgent"));
-const LinkedInProfileBuilder = lazy(() => import("./pages/agents/LinkedInProfileBuilder"));
-const LinkedInNetworkingAgent = lazy(() => import("./pages/agents/LinkedInNetworkingAgent"));
-const NetworkingAgent = lazy(() => import("./pages/agents/NetworkingAgentComplete"));
 const FinancialPlanningAssistant = lazy(() => import("./pages/agents/FinancialPlanningAssistant"));
 const AffiliatePortal = lazy(() => import("./pages/AffiliatePortal"));
 const RedeemCode = lazy(() => import("./pages/RedeemCode"));
@@ -45,7 +36,6 @@ const AdminPromptManager = lazy(() => import("./pages/AdminPromptManager"));
 const UserRoleManagement = lazy(() => import("./pages/UserRoleManagement"));
 const AdminSetup = lazy(() => import("./pages/AdminSetup"));
 const AICostDashboard = lazy(() => import("./pages/admin/AICostDashboard"));
-const MasterResume = lazy(() => import("./pages/MasterResume"));
 const LearningCenter = lazy(() => import("./pages/LearningCenter"));
 const ResearchHub = lazy(() => import("./pages/ResearchHub"));
 const ReferralProgram = lazy(() => import("./pages/ReferralProgram"));
@@ -108,15 +98,15 @@ const AppContent = () => {
             <Route path="/home" element={<ProtectedRoute><BenchmarkHomepage /></ProtectedRoute>} />
             <Route path="/home-legacy" element={<ProtectedRoute><UnifiedHomepage /></ProtectedRoute>} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/projects" element={<Navigate to="/active-applications" replace />} />
+            <Route path="/projects" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/resume-upload" element={<ProtectedRoute><ResumeUpload /></ProtectedRoute>} />
-            <Route path="/coaching" element={<ProtectedRoute><Coaching /></ProtectedRoute>} />
+            <Route path="/coaching" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/resume-optimizer" element={<ProtectedRoute><ResumeOptimizer /></ProtectedRoute>} />
-            <Route path="/agencies" element={<ProtectedRoute><Agencies /></ProtectedRoute>} />
-            <Route path="/job-search" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
-            <Route path="/active-applications" element={<ProtectedRoute><ApplicationQueue /></ProtectedRoute>} />
-            <Route path="/application-queue" element={<Navigate to="/active-applications" replace />} />
-            <Route path="/boolean-search" element={<ProtectedRoute><BooleanSearch /></ProtectedRoute>} />
+            <Route path="/agencies" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/job-search" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/active-applications" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/application-queue" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/boolean-search" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/rate-calculator" element={<ProtectedRoute><RateCalculator /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/templates" element={<ProtectedRoute><Templates /></ProtectedRoute>} />
@@ -131,19 +121,22 @@ const AppContent = () => {
             <Route path="/must-interview-builder-v3" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/agents/resume-builder-legacy" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/my-resumes" element={<ProtectedRoute><MyResumes /></ProtectedRoute>} />
-            {/* Removed agents that depended on vault */}
-            <Route path="/agents/interview-prep" element={<Navigate to="/home" replace />} />
-            <Route path="/agents/corporate-assistant" element={<Navigate to="/home" replace />} />
-            <Route path="/agents/linkedin-blogging" element={<ProtectedRoute><LinkedInBloggingAgent /></ProtectedRoute>} />
-            <Route path="/agents/linkedin-profile-builder" element={<ProtectedRoute><LinkedInProfileBuilder /></ProtectedRoute>} />
-            <Route path="/agents/linkedin-networking" element={<ProtectedRoute><LinkedInNetworkingAgent /></ProtectedRoute>} />
-            <Route path="/agents/networking" element={<ProtectedRoute><NetworkingAgent /></ProtectedRoute>} />
-            <Route path="/agents/career-change-scout" element={<Navigate to="/home" replace />} />
-            <Route path="/agents/career-transition-scout" element={<Navigate to="/home" replace />} />
-            <Route path="/agents/career-trends-scout" element={<Navigate to="/home" replace />} />
+            {/* Removed features - redirect to resume builder */}
+            <Route path="/agents/interview-prep" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/corporate-assistant" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/linkedin-blogging" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/linkedin-profile-builder" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/linkedin-networking" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/networking" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/career-change-scout" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/career-transition-scout" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/agents/career-trends-scout" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/agents/financial-planning-assistant" element={<ProtectedRoute><FinancialPlanningAssistant /></ProtectedRoute>} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/onboarding" element={<Navigate to="/master-resume" replace />} />
+            <Route path="/onboarding" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/master-resume" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/career-vault" element={<Navigate to="/resume-builder" replace />} />
+            <Route path="/career-vault/*" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/affiliate" element={<ProtectedRoute><AffiliatePortal /></ProtectedRoute>} />
             <Route path="/redeem-retirement" element={<RedeemCode />} />
             <Route path="/admin" element={<ProtectedRoute><AdminPortal /></ProtectedRoute>} />
@@ -152,8 +145,6 @@ const AppContent = () => {
             <Route path="/admin/user-roles" element={<ProtectedRoute><AdminRoute><UserRoleManagement /></AdminRoute></ProtectedRoute>} />
             <Route path="/admin-setup" element={<ProtectedRoute><AdminSetup /></ProtectedRoute>} />
             <Route path="/admin/ai-costs" element={<ProtectedRoute><AdminRoute><AICostDashboard /></AdminRoute></ProtectedRoute>} />
-            <Route path="/master-resume" element={<ProtectedRoute><MasterResume /></ProtectedRoute>} />
-            {/* Note: Legacy /career-vault routes removed - will 404 */}
             {/* Legacy redirects */}
             <Route path="/career-tools" element={<Navigate to="/home" replace />} />
             <Route path="/command-center" element={<Navigate to="/home" replace />} />
