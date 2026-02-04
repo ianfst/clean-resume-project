@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Lock files for unused package managers
+bun.lockb
+
+# Temporary documentation
+*_STATUS_REPORT.md
+*_PROGRESS.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
