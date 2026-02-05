@@ -6,7 +6,6 @@ import { QuestionCaptureModal } from '@/components/resume-builder/QuestionCaptur
 import { AddBulletForm } from '@/components/resume-builder/AddBulletForm';
 import { ATSOptimizationCard } from '@/components/resume-builder/ATSOptimizationCard';
 import { JDComparisonView } from '@/components/resume-builder/JDComparisonView';
-import { InterviewPractice } from '@/components/resume-builder/InterviewPractice';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -181,10 +180,10 @@ export default function FixPage() {
 
       if (error) throw error;
 
-      setKeywords(prev => prev.map(kw => 
+      setKeywords(prev => prev.map(kw =>
         kw.id === keywordId ? { ...kw, decision, decided_at: new Date().toISOString() } : kw
       ));
-      
+
       toast.success(`Keyword ${decision === 'add' ? 'approved' : 'suppressed'}`);
     } catch (err) {
       console.error('Failed to update keyword:', err);
@@ -223,7 +222,7 @@ export default function FixPage() {
               Review keywords and address gaps before rewriting
             </p>
           </div>
-          <Button 
+          <Button
             onClick={() => navigate(`/resume-builder/${projectId}/studio/summary`)}
             disabled={!allKeywordsDecided && criticalGapsCount > 0}
           >
@@ -523,9 +522,6 @@ export default function FixPage() {
             />
           </TabsContent>
 
-          <TabsContent value="interview" className="space-y-4">
-            {projectId && <InterviewPractice projectId={projectId} />}
-          </TabsContent>
         </Tabs>
 
         {/* Question Capture Modal */}

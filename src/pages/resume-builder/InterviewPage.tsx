@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import { ResumeBuilderShell } from '@/components/resume-builder/ResumeBuilderShell';
-import { InterviewPractice } from '@/components/resume-builder/InterviewPractice';
 
 export default function InterviewPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -25,7 +24,9 @@ export default function InterviewPage() {
           </p>
         </div>
 
-        <InterviewPractice projectId={projectId} />
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Interview practice feature has been removed.</p>
+        </div>
       </div>
     </ResumeBuilderShell>
   );

@@ -2,15 +2,11 @@ import { useState } from "react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WebinarScheduleWidget } from "@/components/home/WebinarScheduleWidget";
-import { CoachingCalendarWidget } from "@/components/home/CoachingCalendarWidget";
-import { JobMarketLiveDataWidget } from "@/components/home/JobMarketLiveDataWidget";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import { useUserContext } from "@/hooks/useUserContext";
 import { useQuickScore } from "@/hooks/useQuickScore";
 import { useResumeProgress } from "@/hooks/useResumeProgress";
-import { useInterviewPrepStatus } from "@/hooks/useInterviewPrepStatus";
 import { V3HomeHero } from "@/components/home/v3/V3HomeHero";
-import { V3ActiveJobSearch } from "@/components/home/v3/V3ActiveJobSearch";
 import { V3MicroWins } from "@/components/home/v3/V3MicroWins";
 import { V3ScoreStatusCard } from "@/components/home/v3/V3ScoreStatusCard";
 import { V3QuickActionsCard } from "@/components/home/v3/V3QuickActionsCard";
@@ -27,14 +23,13 @@ const UnifiedHomeContent = () => {
   const userContext = useUserContext();
   const { data: quickScore, isLoading: scoreLoading } = useQuickScore();
   const { data: resumeProgress, isLoading: progressLoading } = useResumeProgress();
-  const { data: interviewStatus, isLoading: interviewLoading } = useInterviewPrepStatus();
   const navigate = useNavigate();
   const isPlatinum = subscription?.tier === 'concierge_elite';
   const [explorationModal, setExplorationModal] = useState<{ isOpen: boolean; feature: string; description: string } | null>(null);
 
   const showResumeCTA = userContext.resumeCompletion < 30;
 
-  if (userContext.loading || scoreLoading || progressLoading || interviewLoading) {
+  if (userContext.loading || scoreLoading || progressLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl space-y-8 flex justify-center items-center min-h-[50vh]">
         <p className="text-muted-foreground">Loading your career center...</p>
@@ -66,8 +61,6 @@ const UnifiedHomeContent = () => {
   // Calculate states for Quick Actions
   const hasScore = typeof scoreData.lastScore === 'number';
   const hasActiveResume = resumeProgress?.has_active_resume || false;
-  const applicationCount = userContext.activeApplications || 0;
-  const hasInterviewPrep = interviewStatus?.hasInterviewPrep || false;
 
   return (
     <ContentLayout
@@ -75,43 +68,26 @@ const UnifiedHomeContent = () => {
       rightSidebar={
         <aside className="w-80 border-l bg-background p-6 space-y-6 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
           <WebinarScheduleWidget isPlatinum={isPlatinum} />
-          <CoachingCalendarWidget isPlatinum={isPlatinum} />
-          <JobMarketLiveDataWidget />
         </aside>
       }
     >
       <div className="container mx-auto px-4 py-8 max-w-7xl space-y-6">
-        
+
         {/* NEW LAYOUT: Score → Build → Apply → Win */}
 
         {/* 1. Hero - Updated messaging */}
-        <V3HomeHero 
+        <V3HomeHero
           userName={userContext.userName}
           resumeCompletion={userContext.resumeCompletion}
           todaysPriority={todaysPriority}
         />
 
-        {/* 2. Quick Actions Path - Score → Build → Apply → Win */}
-        <V3QuickActionsCard
-          hasScore={hasScore}
-          hasActiveResume={hasActiveResume}
-          applicationCount={applicationCount}
-          hasInterviewPrep={hasInterviewPrep}
-        />
-
-        {/* 3. Two-column layout: Score Status + Active Applications */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Score Status Card - Most prominent */}
+        {/* 2. Score Status Card */}
+        <div className="grid md:grid-cols-1 gap-6">
           <V3ScoreStatusCard
             lastScore={scoreData.lastScore}
             lastScoredDate={scoreData.lastScoredDate}
             tierInfo={scoreData.tierInfo}
-          />
-
-          {/* Active Job Search - Show applications/interviews */}
-          <V3ActiveJobSearch
-            activeApplications={userContext.activeApplications}
-            upcomingInterviews={userContext.upcomingInterviews}
           />
         </div>
 
@@ -147,8 +123,8 @@ const UnifiedHomeContent = () => {
                   Continue Setup
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   onClick={() => setExplorationModal({
                     isOpen: true,
                     feature: "AI-Powered Features",
@@ -176,8 +152,8 @@ const UnifiedHomeContent = () => {
                     </CardDescription>
                   </div>
                 </div>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   onClick={() => navigate('/master-resume')}
                 >
@@ -200,8 +176,8 @@ const UnifiedHomeContent = () => {
                   <div>
                     <p className="text-muted-foreground">Status</p>
                     <p className="font-medium text-amber-500">
-                      {userContext.resumeCompletion < 50 ? 'Building' : 
-                       userContext.resumeCompletion < 80 ? 'Expanding' : 'Complete'}
+                      {userContext.resumeCompletion < 50 ? 'Building' :
+                        userContext.resumeCompletion < 80 ? 'Expanding' : 'Complete'}
                     </p>
                   </div>
                 </div>

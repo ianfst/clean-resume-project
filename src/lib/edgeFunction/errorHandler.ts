@@ -1,5 +1,28 @@
 import { toast } from "sonner";
-import { FunctionsHttpError, FunctionsRelayError, FunctionsFetchError } from '@supabase/supabase-js';
+
+// Local error types (replacing Supabase types)
+class FunctionsHttpError extends Error {
+  context?: { status?: number; body?: any };
+  constructor(message: string, context?: { status?: number; body?: any }) {
+    super(message);
+    this.name = 'FunctionsHttpError';
+    this.context = context;
+  }
+}
+
+class FunctionsRelayError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FunctionsRelayError';
+  }
+}
+
+class FunctionsFetchError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FunctionsFetchError';
+  }
+}
 
 export interface EdgeFunctionError {
   message: string;
@@ -7,6 +30,8 @@ export interface EdgeFunctionError {
   status?: number;
   details?: any;
 }
+
+export { FunctionsHttpError, FunctionsRelayError, FunctionsFetchError };
 
 /**
  * Handles edge function errors with user-friendly messages and proper logging
@@ -58,11 +83,11 @@ export function handleEdgeFunctionError(error: unknown, functionName: string): E
   if (error instanceof FunctionsRelayError || error instanceof FunctionsFetchError) {
     // Check if this looks like a timeout
     const errorMsg = error.message || '';
-    const isLikelyTimeout = errorMsg.includes('Load failed') || 
-                            errorMsg.includes('timeout') ||
-                            errorMsg.includes('aborted');
-    
-    const message = isLikelyTimeout 
+    const isLikelyTimeout = errorMsg.includes('Load failed') ||
+      errorMsg.includes('timeout') ||
+      errorMsg.includes('aborted');
+
+    const message = isLikelyTimeout
       ? "Request timed out. This can happen with long content. Please try again."
       : "Network error. Please check your connection and try again.";
     toast.error(message);
@@ -118,29 +143,29 @@ export async function retryWithBackoff<T>(
   initialDelay: number = 1000
 ): Promise<T> {
   let lastError: any;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error;
-      
+
       // Don't retry for non-rate-limit errors
       if (!(error instanceof FunctionsHttpError && error.context?.status === 429)) {
         throw error;
       }
-      
+
       // Don't retry on last attempt
       if (i === maxRetries - 1) {
         throw error;
       }
-      
+
       // Exponential backoff
       const delay = initialDelay * Math.pow(2, i);
       console.log(`Rate limited, retrying in ${delay}ms...`);
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
-  
+
   throw lastError;
 }

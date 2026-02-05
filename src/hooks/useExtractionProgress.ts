@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+
+// Mock realtime payload type for local implementation
+type RealtimePostgresChangesPayload<T> = {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
+  new: T;
+  old: T;
+  errors: any;
+};
 
 interface ProgressUpdate {
   phase: string;
@@ -28,7 +35,7 @@ export const useExtractionProgress = (resumeId: string | undefined) => {
           .select('*')
           .eq('vault_id', resumeId)
           .single();
-        
+
         if (error) {
           console.warn('⚠️ [ExtractionProgress] Error fetching progress:', error);
           return;
@@ -37,12 +44,12 @@ export const useExtractionProgress = (resumeId: string | undefined) => {
         if (data) {
           const progressData = data as any;
           const currentProgress = progressData.percentage || 0;
-          
+
           setProgress(currentProgress);
           setCurrentMessage(progressData.message || 'Processing...');
           setPhase(progressData.phase || 'processing');
           setItemsExtracted(progressData.items_extracted || 0);
-          
+
           if (currentProgress >= 100) {
             setIsComplete(true);
           }
@@ -69,12 +76,12 @@ export const useExtractionProgress = (resumeId: string | undefined) => {
           if (payload.new) {
             const update = payload.new as ProgressUpdate;
             const newProgress = update.percentage || 0;
-            
+
             setProgress(newProgress);
             setCurrentMessage(update.message || 'Processing...');
             setPhase(update.phase || 'processing');
             setItemsExtracted(update.items_extracted || 0);
-            
+
             if (newProgress >= 100) {
               setIsComplete(true);
             }

@@ -100,13 +100,7 @@ const AppContent = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/projects" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/resume-upload" element={<ProtectedRoute><ResumeUpload /></ProtectedRoute>} />
-            <Route path="/coaching" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/resume-optimizer" element={<ProtectedRoute><ResumeOptimizer /></ProtectedRoute>} />
-            <Route path="/agencies" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/job-search" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/active-applications" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/application-queue" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/boolean-search" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/rate-calculator" element={<ProtectedRoute><RateCalculator /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/templates" element={<ProtectedRoute><Templates /></ProtectedRoute>} />
@@ -121,22 +115,9 @@ const AppContent = () => {
             <Route path="/must-interview-builder-v3" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/agents/resume-builder-legacy" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/my-resumes" element={<ProtectedRoute><MyResumes /></ProtectedRoute>} />
-            {/* Removed features - redirect to resume builder */}
-            <Route path="/agents/interview-prep" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/corporate-assistant" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/linkedin-blogging" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/linkedin-profile-builder" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/linkedin-networking" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/networking" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/career-change-scout" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/career-transition-scout" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/agents/career-trends-scout" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/agents/financial-planning-assistant" element={<ProtectedRoute><FinancialPlanningAssistant /></ProtectedRoute>} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/onboarding" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/master-resume" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/career-vault" element={<Navigate to="/resume-builder" replace />} />
-            <Route path="/career-vault/*" element={<Navigate to="/resume-builder" replace />} />
             <Route path="/affiliate" element={<ProtectedRoute><AffiliatePortal /></ProtectedRoute>} />
             <Route path="/redeem-retirement" element={<RedeemCode />} />
             <Route path="/admin" element={<ProtectedRoute><AdminPortal /></ProtectedRoute>} />

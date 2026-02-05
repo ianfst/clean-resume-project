@@ -1,336 +1,276 @@
-# Job API Setup Guide - Accurate & Verified Sources
+# API Setup Guide - Running Without Supabase
 
-This guide provides **VERIFIED** instructions for obtaining API keys for job APIs that actually work. Many APIs listed in initial research don't exist or aren't publicly available - this guide focuses only on **confirmed, obtainable sources**.
+## Overview
+This application now makes **direct API calls** to external services instead of using Supabase Edge Functions. All Supabase functionality has been removed and replaced with:
 
-## ⚠️ **IMPORTANT REALITY CHECK**
-Many popular job board APIs (Workday, SmartRecruiters, ZipRecruiter, Monster, CareerBuilder) are **NOT publicly available** or have been discontinued. This guide focuses on the APIs you can **actually obtain and use**.
+1. **Local Storage** - For data persistence (auth, database)
+2. **Direct API Calls** - To Lovable AI Gateway (OpenAI, Gemini)
 
----
+## What You Need
 
-## 🟢 **ALREADY WORKING** (No Setup Needed)
-These are already implemented and working:
-- Greenhouse, Lever, Ashby
-- RemoteOK, We Work Remotely, Remotive
-- USAJOBS, SAM.gov, Indeed
-- FlexJobs, Stack Overflow, Authentic Jobs
-- Gun.io, Braintrust, Catalant, Krop
+### 1. Lovable AI API Key
+The app uses the Lovable AI Gateway to access OpenAI and Google Gemini models.
 
----
+**Get your API key:**
+1. Go to [https://lovable.dev](https://lovable.dev)
+2. Sign up or log in
+3. Navigate to your workspace settings
+4. Copy your API key
 
-## 🆓 **FREE APIs (Just Added - No Keys Needed)**
-These were just implemented with no API key required:
-- Arbeitnow
-- Remotive
-- Working Nomads
-- GitHub Jobs
-- Hacker News Jobs
-- ReliefWeb
-- JobStreet (limited)
+**Cost:** Pay-as-you-go pricing based on token usage
+- Gemini Flash: ~$0.30 per 1M input tokens
+- GPT-5: ~$10 per 1M input tokens
+- See full pricing in `src/lib/apiClient.ts`
 
----
+## Setup Instructions
 
-## ❌ **APIs THAT ARE NOT AVAILABLE** (Removed from Implementation)
+### Option 1: Environment Variable (Recommended)
 
-### **Workday Jobs API** - ❌ DOES NOT EXIST
-**Reality**: Workday does NOT have a public job board API. Only internal APIs for existing enterprise customers.
-**Verdict**: Cannot obtain - Enterprise software only.
+1. Open `.env.local` in the project root
+2. Replace `your_lovable_api_key_here` with your actual API key:
+   ```
+   VITE_LOVABLE_API_KEY=your_actual_key_here
+   ```
+3. Save the file
+4. Restart the dev server if it's running
 
----
+### Option 2: Browser localStorage
 
-### **SmartRecruiters API** - ❌ RESTRICTED ACCESS
-**Reality**: Requires being a SmartRecruiters customer or official partner, not available for public job boards.
-**Verdict**: Cannot easily obtain - Business partnership required.
+If you don't want to use environment variables:
 
----
+1. Start the app: `npm run dev`
+2. Open browser DevTools (F12)
+3. Go to Console tab
+4. Run this command:
+   ```javascript
+   localStorage.setItem('lovable_api_key', 'your_actual_key_here')
+   ```
+5. Refresh the page
 
-### **ZipRecruiter API** - ❌ DISCONTINUED
-**Reality**: ZipRecruiter ended their ZipSearch API program on March 31, 2025.
-**Verdict**: No longer available - Program completely shut down.
+## How It Works
 
----
+### Architecture
 
-### **Monster API** - ❌ WRONG API
-**Reality**: The "Monster API" is for AI/ML models, not job postings. No public job posting API available.
-**Verdict**: Incorrect - Not applicable for job aggregation.
-
----
-
-### **CareerBuilder API** - ❌ RESTRICTED
-**Reality**: Requires paid enterprise partnership.
-**Verdict**: Not easily obtainable.
-
----
-
-### **iCIMS Jobs API** - ⚠️ LIMITED PUBLIC ACCESS
-**Reality**: Has public job portal endpoints but requires knowing specific customer IDs and limited functionality.
-**Verdict**: Complex implementation, low priority.
-
----
-
-## 🔑 **APIs THAT ARE ACTUALLY AVAILABLE**
-
-### **1. Adzuna API** ✅ (Already have key in secrets)
-**Status**: Already configured in your project!
-- Go to Opportunities page to see Adzuna jobs
-
----
-
-### **2. Google Jobs API (via SearchAPI)** ✅ (Already have key)
-**Status**: Already configured in your project!
-- Used in Job Search Agent
-
----
-
-### **3. Dice API** ✅ (NO KEY NEEDED - HIGHEST PRIORITY)
-**Estimated Jobs**: 80K+ tech jobs
-**Setup Time**: Immediate - No registration needed!
-**Cost**: Free (1000 requests/day)
-
-**Steps**:
-1. No registration needed - API is completely open!
-2. Just implement the API calls directly
-3. Rate limit: 1000 requests/day
-
-**API Endpoint**: `https://www.dice.com/api/v1/jobs/search`
-
-**Example**:
-```javascript
-fetch('https://www.dice.com/api/v1/jobs/search?q=developer&location=Chicago')
+```
+Frontend (React)
+    ↓
+Local Database (localStorage)
+    ↓
+API Client (src/lib/apiClient.ts)
+    ↓
+Lovable AI Gateway
+    ↓
+OpenAI / Google Gemini
 ```
 
-**API Documentation**: https://www.dice.com/common/content/util/apidoc/jobsearch.html
+### API Functions Implemented
 
----
+The following edge functions have been replaced with direct API calls:
 
-### **4. Reed.co.uk API** ✅ (UK Jobs - HIGH PRIORITY)
-**Estimated Jobs**: 250K+ UK jobs
-**Setup Time**: 5 minutes - Instant signup
-**Cost**: Free (1000 requests/day)
+✅ **parse-resume** - Extract text from resume files (TXT only in local mode)
+✅ **rb-classify-jd** - Classify job descriptions (role, level, industry)
+✅ **rb-extract-jd-requirements** - Extract requirements from JD
+✅ **rb-generate-benchmark** - Generate role benchmarks
+✅ **analyze-resume-gaps** - Analyze resume vs requirements
+✅ **rb-rewrite-section** - Rewrite resume sections
+✅ **rb-hiring-manager-critique** - Generate hiring manager feedback
 
-**Steps**:
-1. Go to: https://www.reed.co.uk/developers
-2. Click "Register for API Access"
-3. Fill out short form
-4. API key sent instantly to email
-5. Add to Lovable secrets:
-   - Secret name: `REED_API_KEY`
+### Functions NOT Implemented
 
-**API Endpoint**: `https://www.reed.co.uk/api/1.0/search`
+The following functions require additional setup or are not available in local mode:
 
-**Example**:
+❌ **PDF/DOCX Parsing** - Requires server-side processing
+❌ **Email Functions** - No email service configured
+❌ **Stripe/Payment** - No payment processing
+❌ **Database Triggers** - No server-side logic
+❌ **Real-time Subscriptions** - Mocked but non-functional
+
+## Testing the Setup
+
+### 1. Verify API Key
+
+Open browser console and run:
 ```javascript
-fetch('https://www.reed.co.uk/api/1.0/search?keywords=developer&locationName=London', {
-  headers: { 'Authorization': 'Basic ' + btoa(apiKey + ':') }
-})
+console.log(import.meta.env.VITE_LOVABLE_API_KEY || localStorage.getItem('lovable_api_key'))
 ```
 
-**API Documentation**: https://www.reed.co.uk/developers/Jobseeker
+You should see your API key (not "your_lovable_api_key_here").
 
----
+### 2. Test API Call
 
-### **5. Workable Jobs API** ✅ (HIGH PRIORITY)
-**Estimated Jobs**: 150K+
-**Setup Time**: Immediate - No authentication needed!
-**Cost**: Free
+Try using any AI feature in the app:
+- Upload a resume (use .txt file)
+- Paste a job description
+- Click "Analyze" or "Generate"
 
-**Steps**:
-1. No API key needed - public endpoints!
-2. Just need to know company names using Workable
-3. Implement direct API calls
+Check the browser console for:
+- `[LocalDB] Edge function called: [function-name]`
+- API responses or errors
 
-**API Endpoint**: `https://apply.workable.com/api/v1/widget/accounts/{company_name}`
+### 3. Monitor API Usage
 
-**Example**:
-```javascript
-fetch('https://apply.workable.com/api/v1/widget/accounts/COMPANY_NAME')
+Watch the console for:
+```
+[LocalDB] Edge function called: rb-classify-jd
 ```
 
-**API Documentation**: https://help.workable.com/hc/en-us/articles/115012771647
+If you see an error about API key, check your setup.
 
----
+## Troubleshooting
 
-### **6. Jooble API** ✅ (MEDIUM PRIORITY)
-**Estimated Jobs**: 2M+ (global aggregator)
-**Setup Time**: 10 minutes
-**Cost**: Free tier: 50K requests/month
+### "API key not configured"
 
-**Steps**:
-1. Go to: https://jooble.org/api/about
-2. Fill out the application form
-3. Receive API key via email (usually within 1 hour)
-4. Add to Lovable secrets:
-   - Secret name: `JOOBLE_API_KEY`
+**Problem:** The app can't find your API key.
 
-**API Endpoint**: `https://jooble.org/api/{api_key}`
+**Solutions:**
+1. Check `.env.local` has the correct key
+2. Restart the dev server after changing `.env.local`
+3. Try localStorage method instead
+4. Make sure the key starts with `VITE_` in the env file
 
-**Example**:
-```javascript
-fetch('https://jooble.org/api/YOUR_API_KEY', {
-  method: 'POST',
-  body: JSON.stringify({ keywords: 'developer', location: 'New York' })
-})
+### "AI API error (401)"
+
+**Problem:** Invalid or expired API key.
+
+**Solutions:**
+1. Verify your key is correct
+2. Check if your Lovable account is active
+3. Generate a new API key from Lovable dashboard
+
+### "AI API error (402)"
+
+**Problem:** No credits remaining.
+
+**Solutions:**
+1. Add credits to your Lovable workspace
+2. Check your billing settings at lovable.dev
+
+### "AI API error (429)"
+
+**Problem:** Rate limit exceeded.
+
+**Solutions:**
+1. Wait a moment and try again
+2. The app will automatically retry
+3. Consider upgrading your Lovable plan
+
+### "Function not implemented in local mode"
+
+**Problem:** You're trying to use a function that hasn't been implemented yet.
+
+**Solutions:**
+1. Check the "Functions NOT Implemented" list above
+2. Some features require backend infrastructure
+3. You can add implementations in `src/lib/localDatabase.ts`
+
+## Adding More API Functions
+
+To add support for additional edge functions:
+
+1. **Add the API logic** in `src/lib/apiClient.ts`:
+   ```typescript
+   export async function myNewFunction(params: any, apiKey: string) {
+       const response = await callAI({
+           messages: [
+               { role: 'system', content: 'Your prompt' },
+               { role: 'user', content: params.input }
+           ],
+           model: AI_MODELS.DEFAULT,
+       }, apiKey);
+       
+       return JSON.parse(response.choices[0].message.content);
+   }
+   ```
+
+2. **Add the route** in `src/lib/localDatabase.ts` functions.invoke:
+   ```typescript
+   case 'my-new-function':
+       if (body.input) {
+           const result = await myNewFunction(body, apiKey);
+           return { data: result, error: null };
+       }
+       return { data: null, error: new Error('Missing input') };
+   ```
+
+3. **Test it** by calling `supabase.functions.invoke('my-new-function', { body: {...} })`
+
+## Cost Management
+
+### Monitoring Costs
+
+The app logs token usage to the console:
+```
+Tokens: 1234, Cost: $0.001234
 ```
 
-**API Documentation**: https://jooble.org/api/documentation
+### Reducing Costs
+
+1. **Use cheaper models** - Gemini Flash instead of GPT-5
+2. **Shorter prompts** - Be concise in your inputs
+3. **Cache results** - Store API responses in localStorage
+4. **Batch requests** - Combine multiple operations
+
+### Model Selection
+
+Edit `src/lib/apiClient.ts` to change default models:
+```typescript
+export const AI_MODELS = {
+    DEFAULT: 'google/gemini-2.5-flash',  // Cheapest
+    PREMIUM: 'openai/gpt-5',              // Best quality
+    // ... etc
+}
+```
+
+## Security Notes
+
+### API Key Security
+
+⚠️ **Important:** Your API key is exposed in the browser!
+
+- **Local development:** This is fine
+- **Production:** You MUST use a backend proxy
+- **Never commit** your API key to git
+
+### Protecting Your Key
+
+For production deployment:
+1. Create a backend API proxy
+2. Store the API key on the server
+3. Frontend calls your backend
+4. Backend calls Lovable AI
+
+Example backend proxy (Node.js/Express):
+```javascript
+app.post('/api/ai', async (req, res) => {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${process.env.LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req.body)
+    });
+    res.json(await response.json());
+});
+```
+
+## Next Steps
+
+1. ✅ Get your Lovable API key
+2. ✅ Add it to `.env.local` or localStorage
+3. ✅ Run `npm install` (if you haven't)
+4. ✅ Run `npm run dev`
+5. ✅ Test the app with a simple resume analysis
+6. ✅ Monitor console for API calls and costs
+
+## Support
+
+If you encounter issues:
+1. Check browser console for errors
+2. Verify API key is set correctly
+3. Check Lovable dashboard for API status
+4. Review the troubleshooting section above
 
 ---
 
-### **7. Careerjet API** ⚠️ (MEDIUM PRIORITY - REQUIRES AFFILIATE)
-**Estimated Jobs**: 2M+ (global)
-**Setup Time**: 1-2 weeks (affiliate approval)
-**Cost**: Free tier available
-
-**Steps**:
-1. Go to: https://www.careerjet.com/partners/api/
-2. Apply to become a Careerjet affiliate partner
-3. Wait for approval
-4. Receive affiliate ID via email
-5. Add to Lovable secrets:
-   - Secret name: `CAREERJET_AFFILIATE_ID`
-
-**API Documentation**: https://www.careerjet.com/partners/api/documentation
-
----
-
-### **8. Idealist API** ✅ (NONPROFIT JOBS - LOW PRIORITY)
-**Estimated Jobs**: 100K+ nonprofit opportunities
-**Setup Time**: 1-2 days
-**Cost**: Free
-
-**Steps**:
-1. Go to: https://www.idealist.org/en/developer
-2. Create an Idealist account
-3. Apply for API access (explain it's for job aggregation)
-4. Receive API key via email (usually same day)
-5. Add to Lovable secrets:
-   - Secret name: `IDEALIST_API_KEY`
-
-**API Documentation**: https://www.idealist.org/en/api
-
----
-
-## 🎯 **RECOMMENDED PRIORITY**
-
-### **🚀 IMMEDIATE SETUP (Do These TODAY - No Registration Needed)**:
-1. ✅ **Dice API** - Free, 80K tech jobs, NO KEY NEEDED
-2. ✅ **Workable API** - Free, 150K jobs, NO KEY NEEDED
-
-### **⚡ QUICK SETUP (5-10 Minutes - Instant Keys)**:
-3. ✅ **Reed.co.uk API** - Free, 250K UK jobs, instant signup
-
-### **📅 SHORT TERM (1-2 Days - Simple Registration)**:
-4. ✅ **Jooble API** - Free tier, 2M global jobs, 1-hour approval
-5. ✅ **Idealist API** - Free, 100K nonprofit jobs, same-day approval
-
-### **🔄 MEDIUM TERM (1-2 Weeks - Requires Affiliate Approval)**:
-6. ⚠️ **Careerjet API** - Free tier, 2M global jobs, needs affiliate approval
-
-### **❌ DO NOT PURSUE (Not Available/Restricted)**:
-- ❌ Workday - No public API exists
-- ❌ SmartRecruiters - Customers/partners only
-- ❌ ZipRecruiter - Program discontinued March 2025
-- ❌ Monster - No job posting API
-- ❌ CareerBuilder - Paid partnerships only
-- ⚠️ iCIMS - Limited public access, complex
-- ⚠️ SEEK - $500+/month, ANZ only
-- ⚠️ Built In - Private API, uncertain availability
-
----
-
-## 📝 **SETUP CHECKLIST**
-
-Track your progress:
-
-### **Immediate (No Keys Needed)**
-- [ ] Dice API - Implement today
-- [ ] Workable API - Implement today
-
-### **Quick Setup (Keys Within Hours)**
-- [ ] Reed.co.uk API - Applied: ____ / Key Received: ____ / Implemented: ____
-- [ ] Jooble API - Applied: ____ / Key Received: ____ / Implemented: ____
-
-### **Medium Term (1-2 Weeks)**
-- [ ] Idealist API - Applied: ____ / Key Received: ____ / Implemented: ____
-- [ ] Careerjet API - Applied: ____ / Affiliate Approved: ____ / Implemented: ____
-
-### **Already Working**
-- [x] Adzuna API - Live
-- [x] Google Jobs API - Live
-- [x] USAJobs API - Live
-- [x] 20+ Company Career APIs - Live
-
-**Expected Total**: 480K-3M+ additional jobs from new APIs
-
----
-
-## 🔧 **HOW TO ADD API KEYS TO LOVABLE**
-
-Once you receive any API key:
-
-1. Tell me: "I have the [API_NAME] key"
-2. I'll use the `secrets--add_secret` tool to prompt you
-3. You'll paste the key securely in the modal
-4. I'll update the sync-external-jobs function to use it
-5. Test the integration
-
-**Priority Order for Key Entry**:
-1. Reed.co.uk (instant - do today)
-2. Jooble (1-hour turnaround)
-3. Idealist (same-day approval)
-4. Careerjet (1-2 week approval)
-
----
-
-## 💡 **TIPS**
-
-1. **Start with No-Key APIs**: Dice and Workable work immediately
-2. **Quick Wins First**: Reed.co.uk gives instant API key
-3. **Professional Approach**: Use business email for registrations
-4. **Be Transparent**: Explain you're building a job aggregation platform
-5. **Track Everything**: Keep notes on which APIs you've applied for
-6. **Test Immediately**: Let me know as soon as you get each key
-
----
-
-## 🚨 **COMMON ISSUES**
-
-**"My application was rejected"**
-- Most of the working APIs (Dice, Workable, Reed.co.uk, Jooble) have automatic approval
-- For Careerjet affiliate program, emphasize legitimate job board use case
-
-**"API key not working"**
-- Double-check you copied the full key
-- Verify authentication method (Basic Auth for Reed.co.uk)
-- Check rate limits
-
-**"No response from API provider"**
-- Reed.co.uk and Jooble respond within hours
-- Careerjet may take 1-2 weeks for affiliate approval
-- For Idealist, follow up after 3 days if no response
-
----
-
-## 📊 **EXPECTED TIMELINE**
-
-**Today**: Implement Dice + Workable APIs (NO KEYS NEEDED!)
-**Day 2-3**: Get Reed.co.uk key, implement
-**Week 1**: Apply for Jooble + Idealist, implement when keys arrive
-**Week 2-3**: Apply for Careerjet affiliate program
-**Month 1**: Testing and optimization
-
-**Realistic Goal**: 5-7 new working APIs within 30 days
-**Total Job Coverage**: 500K-3M additional jobs
-
----
-
-## 🎉 **NEXT STEPS**
-
-1. **TODAY**: Implement Dice and Workable APIs (no keys needed)
-2. **TODAY**: Register for Reed.co.uk API (instant key)
-3. **This Week**: Apply for Jooble and Idealist APIs
-4. **Monitor**: Track application status for Careerjet
-5. **Integrate**: Let me know as you receive each API key and I'll add them
-
-**Immediate Win**: With just Dice + Workable + Reed.co.uk, you'll add 480K+ jobs in the next hour!
-
-Ready to implement the APIs that actually work? Let's start with Dice and Workable! 🚀
+**Remember:** This setup is for local development and testing. For production, implement proper backend infrastructure with API key protection.

@@ -1,19 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Zap, FileText, Search, Briefcase, ArrowRight } from "lucide-react";
+import { Zap, FileText, ArrowRight } from "lucide-react";
 
 interface V3QuickActionsCardProps {
   hasScore: boolean;
   hasActiveResume: boolean;
-  applicationCount: number;
-  hasInterviewPrep?: boolean;
 }
 
 export const V3QuickActionsCard = ({
   hasScore,
   hasActiveResume,
-  applicationCount,
-  hasInterviewPrep = false
 }: V3QuickActionsCardProps) => {
   const navigate = useNavigate();
 
@@ -21,7 +17,7 @@ export const V3QuickActionsCard = ({
   const getRecommendedStep = () => {
     if (!hasScore) return 1; // Score first
     if (!hasActiveResume) return 2; // Build resume
-    return 3; // Apply to jobs
+    return 2; // Keep building
   };
 
   const recommendedStep = getRecommendedStep();
@@ -42,27 +38,9 @@ export const V3QuickActionsCard = ({
       title: "Build Must-Interview Resume",
       description: "Tailored for each job you target",
       icon: FileText,
-      path: "/agents/resume-builder-wizard",
+      path: "/resume-builder",
       complete: hasActiveResume
     },
-    {
-      step: 3,
-      label: "Apply",
-      title: "Find & Apply to Jobs",
-      description: "Search 50+ job boards instantly",
-      icon: Search,
-      path: "/job-search",
-      complete: applicationCount > 0
-    },
-    {
-      step: 4,
-      label: "Win",
-      title: "Interview & Negotiate",
-      description: "Prep with real interview questions",
-      icon: Briefcase,
-      path: "/agents/interview-prep",
-      complete: hasInterviewPrep
-    }
   ];
 
   return (
@@ -71,12 +49,12 @@ export const V3QuickActionsCard = ({
         <CardTitle className="text-lg flex items-center gap-2">
           Your Path to Must-Interview
           <span className="text-sm font-normal text-muted-foreground">
-            — Score → Build → Apply → Win
+            — Score → Build
           </span>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {steps.map((step) => {
             const Icon = step.icon;
             const isRecommended = step.step === recommendedStep;
@@ -88,10 +66,10 @@ export const V3QuickActionsCard = ({
                 onClick={() => navigate(step.path)}
                 className={`
                   relative p-4 rounded-lg text-left transition-all
-                  ${isRecommended 
-                    ? 'bg-primary/10 border-2 border-primary shadow-sm' 
-                    : isComplete 
-                      ? 'bg-green-500/10 border border-green-500/30' 
+                  ${isRecommended
+                    ? 'bg-primary/10 border-2 border-primary shadow-sm'
+                    : isComplete
+                      ? 'bg-green-500/10 border border-green-500/30'
                       : 'bg-muted/50 border border-transparent hover:border-primary/30'
                   }
                 `}

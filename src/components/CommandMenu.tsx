@@ -36,21 +36,15 @@ interface CommandItem {
 
 const commandItems: CommandItem[] = [
   { title: "Home", path: "/home", icon: Home, keywords: ["dashboard", "main", "overview"] },
-  { title: "Projects", path: "/projects", icon: FolderKanban, keywords: ["tasks", "work"] },
-  { title: "Job Search", path: "/agents/job-search", icon: Search, keywords: ["find", "opportunities"] },
-  { title: "Active Applications", path: "/active-applications", icon: ClipboardList, keywords: ["apply", "track", "queue"] },
-  { title: "Agencies", path: "/agencies", icon: Building2, keywords: ["recruiters", "staffing"] },
-  { title: "Coaching", path: "/coaching", icon: MessageSquare, keywords: ["mentor", "advice"] },
-  { title: "Career Dashboard", path: "/career-dashboard", icon: Target, keywords: ["career", "tools"] },
-  { title: "Master Resume", path: "/master-resume", icon: Briefcase, keywords: ["skills", "achievements"] },
-  { title: "AI Agents", path: "/ai-agents", icon: Brain, keywords: ["artificial intelligence", "automation"] },
+  { title: "Resume Builder", path: "/resume-builder", icon: FileText, keywords: ["cv", "resume", "builder"] },
+  { title: "Quick Score", path: "/quick-score", icon: Target, keywords: ["score", "analyze", "check"] },
+  { title: "My Resumes", path: "/my-resumes", icon: FolderKanban, keywords: ["projects", "saved"] },
+  { title: "Templates", path: "/templates", icon: FileText, keywords: ["email", "communication"] },
   { title: "Rate Calculator", path: "/rate-calculator", icon: Calculator, keywords: ["salary", "money", "pay"] },
   { title: "Profile", path: "/profile", icon: Users, keywords: ["account", "settings"] },
-  { title: "Templates", path: "/templates", icon: FileText, keywords: ["email", "communication"] },
   { title: "API Keys", path: "/api-keys", icon: Key, keywords: ["integration", "mcp"] },
-  { title: "Automation Settings", path: "/automation-settings", icon: Settings, keywords: ["configure", "preferences"] },
-  { title: "Experimental Lab", path: "/experimental-lab", icon: TestTube, keywords: ["beta", "features"] },
-  { title: "Resume Builder", path: "/resume-builder", icon: FileText, keywords: ["cv", "resume"] },
+  { title: "Learning Center", path: "/learning-center", icon: Brain, keywords: ["learn", "education", "help"] },
+  { title: "Testing Dashboard", path: "/testing-dashboard", icon: TestTube, keywords: ["beta", "features", "test"] },
 ];
 
 export const CommandMenu = () => {
@@ -79,7 +73,7 @@ export const CommandMenu = () => {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Navigation">
+        <CommandGroup heading="Main">
           {commandItems.slice(0, 3).map((item) => {
             const Icon = item.icon;
             return (
@@ -95,24 +89,8 @@ export const CommandMenu = () => {
           })}
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Job Search">
-          {commandItems.slice(3, 7).map((item) => {
-            const Icon = item.icon;
-            return (
-              <CommandItem
-                key={item.path}
-                onSelect={() => handleSelect(item.path)}
-                className="cursor-pointer"
-              >
-                <Icon className="mr-2 h-4 w-4" />
-                <span>{item.title}</span>
-              </CommandItem>
-            );
-          })}
-        </CommandGroup>
-        <CommandSeparator />
         <CommandGroup heading="Tools & Settings">
-          {commandItems.slice(7).map((item) => {
+          {commandItems.slice(3).map((item) => {
             const Icon = item.icon;
             return (
               <CommandItem

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Session } from "@supabase/supabase-js";
+import type { Session } from "@/lib/localAuth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -36,9 +36,9 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     if (!loading && !session) {
       // Preserve the intended destination so we can return after login
       const returnTo = location.pathname + location.search;
-      navigate("/auth", { 
+      navigate("/auth", {
         state: { returnTo },
-        replace: true 
+        replace: true
       });
     }
   }, [loading, session, navigate, location]);

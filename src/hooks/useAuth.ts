@@ -9,8 +9,8 @@
 // =====================================================
 
 import { useState, useEffect } from 'react';
-import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import type { User } from '@/lib/localAuth';
 
 interface AuthState {
   user: User | null;

@@ -57,65 +57,25 @@ export interface ProfileItem {
 // ==========================================
 
 export const mainNavItems: NavItem[] = [
-  { 
-    label: 'Home', 
-    path: '/home', 
-    icon: Home 
+  {
+    label: 'Home',
+    path: '/home',
+    icon: Home
   },
   // MODULE 1: Quick Score (FREE)
-  { 
-    label: 'Quick Score', 
-    path: '/quick-score', 
+  {
+    label: 'Quick Score',
+    path: '/quick-score',
     icon: Zap,
     highlight: true,
     module: 'quick_score',
   },
-  // MODULE 2: Resume & Jobs Studio
-  { 
-    label: 'Resume Builder', 
-    path: '/resume-builder', 
+  // MODULE 2: Resume Builder
+  {
+    label: 'Resume Builder',
+    path: '/resume-builder',
     icon: FileText,
     module: 'resume_jobs_studio',
-  },
-  { 
-    label: 'Find Jobs', 
-    path: '/job-search', 
-    icon: Search,
-    module: 'resume_jobs_studio',
-  },
-  { 
-    label: 'My Applications', 
-    path: '/active-applications', 
-    icon: Briefcase,
-    module: 'resume_jobs_studio',
-  },
-  // MODULE 3: Master Resume
-  {
-    label: 'Master Resume',
-    path: '/master-resume',
-    icon: FileText,
-    module: 'master_resume',
-  },
-  // MODULE 4: LinkedIn Pro
-  {
-    label: 'LinkedIn',
-    icon: Linkedin,
-    module: 'linkedin_pro',
-    dropdown: [
-      { label: 'Profile Builder', path: '/agents/linkedin-profile-builder', icon: Linkedin, module: 'linkedin_pro' },
-      { label: 'Networking', path: '/agents/networking', icon: Users, module: 'linkedin_pro' },
-      { label: 'Content Creator', path: '/agents/linkedin-blogging', icon: MessageSquare, module: 'linkedin_pro' },
-    ],
-  },
-  // MODULE 5: Interview Mastery
-  {
-    label: 'Interview',
-    icon: Mic,
-    module: 'interview_mastery',
-    dropdown: [
-      { label: 'Interview Prep', path: '/agents/interview-prep', icon: Mic, module: 'interview_mastery' },
-      { label: 'Salary Negotiation', path: '/salary-negotiation', icon: DollarSign, module: 'interview_mastery' },
-    ],
   },
   // Settings & More
   {
@@ -124,8 +84,6 @@ export const mainNavItems: NavItem[] = [
     dropdown: [
       { label: 'My Resumes', path: '/my-resumes', icon: FileText, module: 'resume_jobs_studio' },
       { label: 'Resume Templates', path: '/templates', icon: FileText, module: 'resume_jobs_studio' },
-      { label: 'AI Coach', path: '/coaching', icon: Brain, module: 'master_resume' },
-      { label: 'Agencies', path: '/agencies', icon: Building2 },
       { label: 'Learning Center', path: '/learning-center', icon: BookOpen },
       { label: 'Profile Settings', path: '/profile', icon: User },
       { label: 'API Keys', path: '/api-keys', icon: Key },
@@ -143,30 +101,14 @@ export const moduleNavGroups = {
     { label: 'Resume Builder', path: '/resume-builder', icon: FileText },
     { label: 'My Resumes', path: '/my-resumes', icon: FileText },
     { label: 'Templates', path: '/templates', icon: FileText },
-    { label: 'Find Jobs', path: '/job-search', icon: Search },
-    { label: 'My Applications', path: '/active-applications', icon: Briefcase },
-  ],
-  master_resume: [
-    { label: 'Master Resume', path: '/master-resume', icon: FileText },
-    { label: 'AI Coach', path: '/coaching', icon: Brain },
-  ],
-  linkedin_pro: [
-    { label: 'Profile Builder', path: '/agents/linkedin-profile-builder', icon: Linkedin },
-    { label: 'Networking', path: '/agents/networking', icon: Users },
-    { label: 'Content Creator', path: '/agents/linkedin-blogging', icon: MessageSquare },
-  ],
-  interview_mastery: [
-    { label: 'Interview Prep', path: '/agents/interview-prep', icon: Mic },
-    { label: 'Salary Negotiation', path: '/salary-negotiation', icon: DollarSign },
   ],
 };
 
 export const profileDropdownItems: ProfileItem[] = [
   { label: 'Quick Score', path: '/quick-score', icon: Zap },
-  { label: 'Master Resume', path: '/master-resume', icon: FileText },
+  { label: 'Resume Builder', path: '/resume-builder', icon: FileText },
   { type: 'separator' },
   { label: 'Financial Planning', path: '/agents/financial-planning', icon: DollarSign },
-  { label: 'AI Coach', path: '/coaching', icon: Brain },
   { label: 'Learning Center', path: '/learning-center', icon: BookOpen },
   { type: 'separator' },
   { label: 'Testing Dashboard', path: '/testing-dashboard', icon: FlaskConical },
